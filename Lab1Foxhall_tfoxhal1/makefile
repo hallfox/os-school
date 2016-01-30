@@ -1,20 +1,26 @@
-CC=gcc
-CFLAGS=-c -Wall -g
-LDFLAGS=
+CC := gcc
+# CC := clang --analyze # and comment out the linker last line for sanity
+SRCDIR := .
+BUILDDIR := .
+TARGET := lab1
 
-# Per assignment config
-SRC=main.c
-BIN=lab1
+SRCEXT := c
+SOURCES := $(shell find $(SRCDIR) -type f -name "*.$(SRCEXT)")
+OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
+CFLAGS := -g -Wall -Wextra -pedantic
+LIB :=  # plus any other libs IF I HAD THEM
+INC :=
 
-OBJ=$(SRC:.c=.o)
+$(TARGET): $(OBJECTS)
+	@echo " Linking..."
+	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
 
-all: $(SRC) $(BIN)
-
-$(BIN): $(OBJ)
-	$(CC) $(LDFLAGS) $(OBJ) -o $@
-
-.c.o:
-	$(CC) $(CFLAGS) $< -o $@
+$(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
+	@mkdir -p $(BUILDDIR)
+	@echo " $(CC) $(CFLAGS) $(INC) -c -o $@ $<"; $(CC) $(CFLAGS) $(INC) -c -o $@ $<
 
 clean:
-	rm *.o $(BIN)
+	@echo " Cleaning..."; 
+	@echo " $(RM) *.o $(TARGET)"; $(RM) *.o $(TARGET)
+
+.PHONY: clean
