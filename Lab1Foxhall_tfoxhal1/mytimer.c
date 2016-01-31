@@ -1,5 +1,10 @@
 #include "mytimer.h"
+
 #include <stdbool.h>
+#include <sys/time.h>
+#include <time.h>
+#include <stdio.h>
+
 
 struct timeval start, end;
 bool is_timer_running = false;

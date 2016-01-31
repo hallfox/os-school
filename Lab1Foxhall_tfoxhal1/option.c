@@ -1,6 +1,9 @@
 #include "option.h"
 
 #include <time.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <getopt.h>
 
 bool is_in_range(long v, long lower, long upper) {
   if (v < lower || v > upper) {
@@ -11,7 +14,7 @@ bool is_in_range(long v, long lower, long upper) {
   return true;
 }
 
-
+// Option impl
 
 Option *Option_new(int argc, char **argv) {
   char flag;
@@ -153,10 +156,10 @@ void Option_print(Option *option) {
          "Minimum: %d\n"
          "Maximum: %d\n"
          "Seed provided?: %d\n"
-         "Seed: %ld\n"
-         "Input: %p\n"
-         "Output: %p\n"
-         "Counter Output: %p\n",
+         "Seed: %ld\n",
+         /* "Input: %p\n" */
+         /* "Output: %p\n" */
+         /* "Counter Output: %p\n", */
          option->mode, option->size, option->min, option->max, !option->is_time_seeded,
-         option->seed, option->input, option->output, option->count_out);
+         option->seed); // option->input, option->output, option->count_out);
 }
