@@ -26,6 +26,7 @@ Option *Option_new(int argc, char **argv) {
   // Setting defaults
   option->mode = LAB_MODE_SORT; // sort mode
   option->size = 100;
+  option->flg_size = false;
   option->min = 1;
   option->max = 255;
   option->is_time_seeded = true;
@@ -49,6 +50,7 @@ Option *Option_new(int argc, char **argv) {
       // min = 0
       // max = 1_000_000
       // default = 100
+      option->flg_size = true;
       t = strtol(optarg, NULL, 10);
 
       // bounds check

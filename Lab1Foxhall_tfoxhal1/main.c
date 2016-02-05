@@ -55,7 +55,19 @@ int main(int argc, char **argv) {
     }
 
     // Read ints from option->input
-    int n, i;
+    int n;
+    fscanf(option->input, "%d", &n);
+
+    if (option->flg_size && option->size != n) {
+      fprintf(stderr, "Specified size and input size do not match\n");
+      Option_del(option);
+      exit(1);
+    }
+    else if(!option->flg_size) {
+      option->size = n;
+    }
+
+    int i;
     int nums[option->size];
     for (i = 0; i < option->size && fscanf(option->input, "%d", &n) != EOF; i++) {
       nums[i] = n;
@@ -90,10 +102,11 @@ int main(int argc, char **argv) {
     // Randomly generate option->size numbers in the range option->min, option->max
     // Write them to option->output
     // NOTE: srand has already been set by Option_new
+    fprintf(option->output, "%d", option->size);
     for (int i = 0; i < option->size; i++) {
       // Credit to Mary Spencer for variable name
       unsigned int random_ass_number = rand() % (option->max - option->min) + option->min;
-      fprintf(option->output, "%d ", random_ass_number);
+      fprintf(option->output, " %d", random_ass_number);
     }
     fprintf(option->output, "\n");
   }

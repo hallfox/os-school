@@ -11,6 +11,7 @@ typedef enum {LAB_MODE_SORT, LAB_MODE_GEN} Mode;
 typedef struct {
   Mode mode; // Program mode to operate, default is LAB_MODE_SORT
   int size; // Number of ints to read/gen
+  bool flg_size;
   // Options for bounding read/gen
   int min;
   int max;
