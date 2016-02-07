@@ -76,9 +76,8 @@ int main(int argc, char **argv) {
     // Write sorted input to option->output
     qsort(nums, i, sizeof(int), &compare_ints);
     for (int j = 0; j < i; j++) {
-      fprintf(option->output, "%d ", nums[j]);
+      fprintf(option->output, "%d\n", nums[j]);
     }
-    fprintf(option->output, "\n");
 
     // Write the counts of matching ascii and input with username to option->count_out
     char *username = getenv("USER");
