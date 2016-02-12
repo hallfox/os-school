@@ -33,8 +33,8 @@ Option *Option_new(int argc, char **argv) {
     case 'N':
       // Max of 4
       t = (unsigned int) strtol(optarg, NULL, 10);
-      if (t > 4) {
-        log_err("Maximum number of levels is 4");
+      if (t > OPT_LEVELS_MAX) {
+        log_err("Maximum number of levels is %d", OPT_LEVELS_MAX);
         goto die;
       }
       option->levels = t;
@@ -42,8 +42,8 @@ Option *Option_new(int argc, char **argv) {
     case 'M':
       // Max of 3
       t = (unsigned int) strtol(optarg, NULL, 10);
-      if (t > 3) {
-        log_err("Maximum number of children is 3");
+      if (t > OPT_CHILDREN_MAX) {
+        log_err("Maximum number of children is %d", OPT_CHILDREN_MAX);
         goto die;
       }
       option->children = t;

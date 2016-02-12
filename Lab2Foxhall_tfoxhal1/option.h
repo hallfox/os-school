@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#define OPT_CHILDREN_MAX 3
+#define OPT_LEVELS_MAX 4
+
 typedef struct {
   unsigned int levels;
   unsigned int children;

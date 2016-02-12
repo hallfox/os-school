@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h> // qsort, malloc, free...
+#include <assert.h>
 #include "option.h"
 #include "debug.h"
 
@@ -21,23 +22,27 @@ int main(int argc, char **argv) {
 
   pid_t pid;
 
-  // Magic
-  pid = fork();
+  palive(option->levels, getpid(), getppid());
 
-  if (pid < 0) { /* error */
-    log_err("Fork failed.");
-    return 1;
+  assert(option->children <= OPT_CHILDREN_MAX);
+  for (int i = 0; i < option->children; i++) {
+    pid = fork(); // Fork you
+
+    if (pid < 0) { /* error */
+      log_err("Fork failed.");
+      exit(EXIT_FAILURE);
+    }
+    if (pid == 0) { /* child process */
+      char next_level[5];
+      snprintf(next_level, 3, "-N %d", option->levels - 1);
+      execl("./lab2", "lab2", NULL);
+    }
   }
-  if (pid == 0) { /* child process */
-    execlp("/bin/ls", "ls", NULL);
-  }
-  else { /* parent process */
-    /* parent will wait for the child to complete */
-    wait(NULL);
-    printf("Child Complete.");
-  }
+  // Good parents wait for their children
+  wait(NULL);
 
   // Cleanup
+  pdeath(option->levels, getpid(), getppid());
   Option_del(option);
   return 0;
 }
