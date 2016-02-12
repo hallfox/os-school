@@ -1,4 +1,4 @@
-CC := clang
+CC := gcc
 # CC := clang --analyze # and comment out the linker last line for sanity
 TARGET := lab2
 DISTNAME := Lab2Foxhall_tfoxhal1
@@ -8,7 +8,7 @@ HEADEREXT := h
 SOURCES := $(shell find . -type f -name "*.$(SRCEXT)")
 OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 HEADERS := $(shell find . -type f -name "*.$(HEADEREXT)")
-CFLAGS := -g -Wall -std=c99 -Wextra -pedantic
+CFLAGS := -g -Wall -std=c99 -Wextra -pedantic -DNDEBUG
 
 $(TARGET): $(OBJECTS)
 	@echo " Linking..."

@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h> // qsort, malloc, free...
 #include <assert.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 #include "option.h"
 #include "debug.h"
 
@@ -41,6 +44,7 @@ int main(int argc, char **argv) {
     snprintf(num_children, 2, "%d", option->children);
 
     for (unsigned int i = 0; i < option->children; i++) {
+      log_dbg("Process with pid %d spawining child number %d", getpid(), i+1);
       pid = fork(); // Fork you
 
       if (pid < 0) {
@@ -48,8 +52,13 @@ int main(int argc, char **argv) {
         exit(EXIT_FAILURE);
       }
       else if (pid == 0) {
-        execl("./lab2", "lab2", "-N", next_level, "-M", option->children,
+        log_dbg("Process with pid %d about to exec `./lab2 -N %s -M %s "
+            "%s %s", getpid(), next_level, num_children, wait_policy, wait_time);
+        execl("./lab2", "lab2", "-N", next_level, "-M", num_children,
             wait_policy, wait_time, NULL);
+      }
+      else {
+        log_dbg("Process with pid %d successfully forked!", pid);
       }
     }
     // Good parents wait for their children
