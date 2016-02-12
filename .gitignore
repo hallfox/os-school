@@ -32,3 +32,8 @@
 *.dSYM/
 
 *.txt
+GPATH
+GRTAGS
+GTAGS
+
+.DS_Store
