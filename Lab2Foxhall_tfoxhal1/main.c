@@ -4,12 +4,13 @@
 #include "option.h"
 #include "debug.h"
 
+
 #define palive(lev, p_pid, c_pid) \
-  fprintf(stdout, "ALIVE: Level %d process with pid=%d, child of ppid=%d.", \
+  fprintf(stdout, "ALIVE: Level %d process with pid=%d, child of ppid=%d.\n", \
           lev, p_pid, c_pid)
 
 #define pdeath(lev, p_pid, c_pid)                                       \
-  fprintf(stdout, "EXITING: Level %d process with pid=%d, child of ppid=%d.", \
+  fprintf(stdout, "EXITING: Level %d process with pid=%d, child of ppid=%d.\n", \
           lev, p_pid, c_pid)
 
 int main(int argc, char **argv) {
@@ -24,22 +25,44 @@ int main(int argc, char **argv) {
 
   palive(option->levels, getpid(), getppid());
 
-  assert(option->children <= OPT_CHILDREN_MAX);
-  for (int i = 0; i < option->children; i++) {
-    pid = fork(); // Fork you
-
-    if (pid < 0) { /* error */
-      log_err("Fork failed.");
-      exit(EXIT_FAILURE);
+  if (option->levels > 1) {
+    assert(option->children <= OPT_CHILDREN_MAX);
+    char next_level[2], num_children[2], wait_time[2];
+    char *wait_policy;
+    if (!option->pause_mode) {
+      wait_policy = "-s";
+      snprintf(wait_time, 2, "%d", option->sleep_time);
     }
-    if (pid == 0) { /* child process */
-      char next_level[5];
-      snprintf(next_level, 3, "-N %d", option->levels - 1);
-      execl("./lab2", "lab2", NULL);
+    else {
+      wait_policy = "-p";
+      wait_time[0] = '\0';
+    }
+    snprintf(next_level, 2, "%d", option->levels - 1);
+    snprintf(num_children, 2, "%d", option->children);
+
+    for (unsigned int i = 0; i < option->children; i++) {
+      pid = fork(); // Fork you
+
+      if (pid < 0) {
+        log_err("Fork failed.");
+        exit(EXIT_FAILURE);
+      }
+      else if (pid == 0) {
+        execl("./lab2", "lab2", "-N", next_level, "-M", option->children,
+            wait_policy, wait_time, NULL);
+      }
+    }
+    // Good parents wait for their children
+    wait(NULL);
+  }
+  else {
+    if (option->pause_mode) {
+      pause();
+    }
+    else {
+      sleep(option->sleep_time);
     }
   }
-  // Good parents wait for their children
-  wait(NULL);
 
   // Cleanup
   pdeath(option->levels, getpid(), getppid());

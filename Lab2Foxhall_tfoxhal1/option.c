@@ -50,7 +50,7 @@ Option *Option_new(int argc, char **argv) {
       break;
     case 'p':
       if (s_flag) {
-        fprintf(stderr, "ERR: -p flag cannot be specified with -s\n");
+        log_err("-p flag cannot be specified with -s\n");
         goto die;
       }
       option->pause_mode = true;
@@ -58,7 +58,7 @@ Option *Option_new(int argc, char **argv) {
       break;
     case 's':
       if (p_flag) {
-        fprintf(stderr, "ERR: -p flag cannot be specified with -s\n");
+        log_err("-p flag cannot be specified with -s\n");
         goto die;
       }
       t = (unsigned int) strtol(optarg, NULL, 10);
