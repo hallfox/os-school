@@ -1,5 +1,4 @@
 CC := gcc
-# CC := clang --analyze # and comment out the linker last line for sanity
 TARGET := lab2
 DISTNAME := Lab2Foxhall_tfoxhal1
 

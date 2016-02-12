@@ -19,7 +19,7 @@ Option *Option_new(int argc, char **argv) {
   Option *option = malloc(sizeof(Option));
 
   // Setting defaults
-  option->levels = 0;
+  option->levels = 1;
   option->children = 1;
   option->sleep_time = 1;
   option->pause_mode = false;
@@ -33,6 +33,7 @@ Option *Option_new(int argc, char **argv) {
     case 'N':
       // Max of 4
       t = (unsigned int) strtol(optarg, NULL, 10);
+      if (t == 0) t = 1; // shhhhh
       if (t > OPT_LEVELS_MAX) {
         log_err("Maximum number of levels is %d", OPT_LEVELS_MAX);
         goto die;

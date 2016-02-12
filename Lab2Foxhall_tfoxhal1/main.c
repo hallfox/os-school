@@ -10,11 +10,11 @@
 
 #define palive(lev, p_pid, c_pid) \
   fprintf(stdout, "ALIVE: Level %d process with pid=%d, child of ppid=%d.\n", \
-          lev, p_pid, c_pid)
+          lev - 1, p_pid, c_pid)
 
 #define pdeath(lev, p_pid, c_pid)                                       \
   fprintf(stdout, "EXITING: Level %d process with pid=%d, child of ppid=%d.\n", \
-          lev, p_pid, c_pid)
+          lev - 1, p_pid, c_pid)
 
 int main(int argc, char **argv) {
   Option *option = Option_new(argc, argv);
@@ -30,11 +30,11 @@ int main(int argc, char **argv) {
 
   if (option->levels > 1) {
     assert(option->children <= OPT_CHILDREN_MAX);
-    char next_level[2], num_children[2], wait_time[2];
+    char next_level[2], num_children[2], wait_time[16];
     char *wait_policy;
     if (!option->pause_mode) {
       wait_policy = "-s";
-      snprintf(wait_time, 2, "%d", option->sleep_time);
+      snprintf(wait_time, 16, "%d", option->sleep_time);
     }
     else {
       wait_policy = "-p";
@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
       }
     }
     // Good parents wait for their children
-    wait(NULL);
+    while(wait(NULL) != -1);
   }
   else {
     if (option->pause_mode) {
