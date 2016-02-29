@@ -149,11 +149,13 @@ int main(int argc, char **argv) {
         exit(1);
       }
     }
-    shm_unlink(shm_name);
+    if (shm_unlink(shm_name) == -1) {
+      perror("Unlink shared memory");
+      exit(1);
+    }
 
     pdeath(1);
   }
-
 
   // Cleanup
   return 0;
