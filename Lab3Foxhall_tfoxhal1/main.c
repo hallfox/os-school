@@ -5,6 +5,7 @@
 #include <sys/shm.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <signal.h>
 
@@ -17,6 +18,8 @@
 #define pdeath(lev) \
   fprintf(stdout, "EXITING: Level %d process with pid=%d, child of ppid=%d.\n", \
           lev, getpid(), getppid())
+
+static unsigned proc_id = 0;
 
 void write_to_child(int *fd, unsigned proc_id) {
   logd("Proc %u ready to write to child", getpid());
@@ -42,7 +45,7 @@ void read_from_parent(int *fd, unsigned *proc_id) {
 }
 
 void infanticide_handler(int sig) {
-  pdeath(1);
+  pdeath(proc_id);
   exit(0);
 }
 
@@ -60,7 +63,7 @@ int main(int argc, char **argv) {
   }
 
   int pipefd[2];
-  unsigned proc_id = 0;
+  proc_id = 0;
   pid_t pid;
 
   const char *named_pipe = "/tmp/philipdextreme.com"; // never forget
@@ -174,15 +177,18 @@ int main(int argc, char **argv) {
         perror("Killing children");
         exit(1);
       }
+      // Wait on process to die
+      logd("Send kill to proc %d", shm_ptr[i]);
+      waitpid(shm_ptr[i], NULL, 0);
+      logd("Waited for proc %d to die", shm_ptr[i]);
     }
     if (shm_unlink(shm_name) == -1) {
       perror("Unlink shared memory");
       exit(1);
     }
-
-    pdeath(proc_id);
   }
 
+  pdeath(proc_id);
   // Cleanup
   return 0;
 }
