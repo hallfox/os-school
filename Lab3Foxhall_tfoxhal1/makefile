@@ -6,15 +6,15 @@ HEADEREXT := h
 SOURCES := $(shell find . -type f -name "*.$(SRCEXT)")
 OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 HEADERS := $(shell find . -type f -name "*.$(HEADEREXT)")
-CFLAGS := -g -Wall -std=c99 -Wextra -pedantic
+CFLAGS := -g -Wall -std=gnu99 -Wextra -pedantic -DNDEBUG
 LIBS := -lrt
 
 $(TARGET): $(OBJECTS)
 	@echo " Linking..."
-	@echo " $(CC) $^ -o $(TARGET)"; $(CC) $^ -o $(TARGET)
+	@echo " $(CC) $^ -o $(TARGET) $(LIBS)"; $(CC) $^ -o $(TARGET) $(LIBS)
 
 %.o: %.$(SRCEXT)
-	@echo " $(CC) $(CFLAGS) $(LIBS) -c -o $@ $<"; $(CC) $(CFLAGS) $(LIBS) -c -o $@ $<
+	@echo " $(CC) $(CFLAGS) -c -o $@ $<"; $(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
 	@echo " Cleaning...";
