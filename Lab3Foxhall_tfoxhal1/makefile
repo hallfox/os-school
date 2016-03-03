@@ -6,7 +6,7 @@ HEADEREXT := h
 SOURCES := $(shell find . -type f -name "*.$(SRCEXT)")
 OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 HEADERS := $(shell find . -type f -name "*.$(HEADEREXT)")
-CFLAGS := -g -Wall -std=gnu99 -Wextra -pedantic #-DNDEBUG
+CFLAGS := -g -Wall -std=gnu99 -Wextra -pedantic -DNDEBUG
 LIBS := -lrt
 
 $(TARGET): $(OBJECTS)

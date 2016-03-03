@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <signal.h>
+#include <errno.h>
 
 #include "debug.h"
 
@@ -44,10 +45,13 @@ void read_from_parent(int *fd, unsigned *proc_id) {
   logd("Proc %u success read %u from parent", getpid(), *proc_id);
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 void infanticide_handler(int sig) {
   pdeath(proc_id);
   exit(0);
 }
+#pragma GCC diagnostic pop
 
 int main(int argc, char **argv) {
   unsigned procs;
@@ -177,10 +181,18 @@ int main(int argc, char **argv) {
         perror("Killing children");
         exit(1);
       }
-      // Wait on process to die
-      logd("Send kill to proc %d", shm_ptr[i]);
       waitpid(shm_ptr[i], NULL, 0);
-      logd("Waited for proc %d to die", shm_ptr[i]);
+      while (kill(shm_ptr[i], 0) != -1);
+      if (errno == ESRCH) {
+        errno = 0;
+      } else {
+        perror("Killed child polling");
+        exit(1);
+      }
+      // Wait on process to die
+      /* logd("Send kill to proc %d", shm_ptr[i]); */
+      /* waitpid(shm_ptr[i], NULL, 0); */
+      /* logd("Waited for proc %d to die", shm_ptr[i]); */
     }
     if (shm_unlink(shm_name) == -1) {
       perror("Unlink shared memory");
