@@ -6,8 +6,8 @@ HEADEREXT := h
 SOURCES := $(shell find . -type f -name "*.$(SRCEXT)")
 OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 HEADERS := $(shell find . -type f -name "*.$(HEADEREXT)")
-CFLAGS := -g -Wall -std=c99 -Wextra -pedantic -pthread #-DNDEBUG
-LIBS :=
+CFLAGS := -g -Wall -std=c99 -Wextra -pedantic -pthread -DNDEBUG
+LIBS := -lpthread
 
 $(TARGET): $(OBJECTS)
 	@echo " Linking..."
